@@ -1,31 +1,521 @@
-html {
-  font-size: 14px;
+/* ============================================================
+   Mis Gastos — sistema visual
+   -----------------------------------------------------------
+   Concepto: un libro de cuentas (ledger) llevado en papel.
+   Verde de tapa como color principal, papel cálido de fondo,
+   tinta oscura para el texto y una cinta de encuadernado en
+   vino para lo destructivo. Los montos usan una tipografía
+   monoespaciada para que las cifras se alineen en columna,
+   como en un registro contable real, y el total se subraya
+   con doble línea (la convención real de un "gran total").
+
+   Índice:
+   1. Tokens (colores, tipografía, forma)
+   2. Reset / base
+   3. Encabezado y navegación
+   4. Contenedor de página
+   5. Botones
+   6. Tarjeta resumen ("total de gastos")
+   7. Tabla de gastos (+ versión apilada para móvil)
+   8. Etiquetas de categoría
+   9. Formularios y validación
+   10. Tarjeta de detalle / confirmación de borrado
+   11. Estado vacío
+   ============================================================ */
+
+/* ---------- 1. Tokens ---------- */
+:root {
+  /* Color */
+  --mg-verde: #1f4d3d;
+  --mg-verde-oscuro: #16382c;
+  --mg-verde-tinta: #e6eee9;
+  --mg-papel: #fbf8f1;
+  --mg-fondo: #f1ede3;
+  --mg-borde: #e3dcc9;
+  --mg-tinta: #2b2620;
+  --mg-tinta-suave: #6b6255;
+  --mg-vino: #7a3030;
+  --mg-vino-oscuro: #5c2424;
+  --mg-vino-tinta: #f3e3e1;
+  --mg-bronce: #a8823d;
+  --mg-bronce-tinta: #f3e9d2;
+  --mg-gris-tinta: #ece7db;
+
+  /* Tipografía: display con carácter, texto utilitario claro,
+     monoespaciada para cifras (ver comentario del archivo). */
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Forma */
+  --radius: 0.75rem;
+  --radius-sm: 0.5rem;
+  --shadow-card: 0 1px 2px rgba(43, 38, 32, 0.06), 0 8px 24px -12px rgba(43, 38, 32, 0.2);
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
+/* ---------- 2. Reset / base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--mg-fondo);
+  color: var(--mg-tinta);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0 0 0.35em;
+  color: var(--mg-tinta);
+}
+
+p { margin: 0 0 1em; }
+
+a { color: var(--mg-verde); }
+
+img { max-width: 100%; }
+
+:focus-visible {
+  outline: 3px solid var(--mg-bronce);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* ---------- 3. Encabezado y navegación ---------- */
+.site-header {
+  background: var(--mg-papel);
+  border-bottom: 1px solid var(--mg-borde);
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.site-header .wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-body {
-  margin-bottom: 60px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.35rem;
+  color: var(--mg-tinta);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.brand::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--mg-verde);
+  display: inline-block;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
 }
+
+.nav-links a:not(.btn) {
+  color: var(--mg-tinta-suave);
+  font-weight: 500;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-links a:not(.btn):hover { color: var(--mg-verde); border-color: var(--mg-verde); }
+.nav-links a.is-active:not(.btn) { color: var(--mg-verde); border-color: var(--mg-verde); }
+
+/* Bajo cierto ancho el header pasa a una sola columna: evita que el botón
+   "Nuevo gasto" quede cortado en vez de bajar de línea con el resto del nav. */
+@media (max-width: 640px) {
+  .site-header .wrap { flex-direction: column; align-items: flex-start; }
+  .nav-links { width: 100%; justify-content: space-between; }
+}
+
+/* ---------- 4. Contenedor de página ---------- */
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  width: 100%;
+  flex: 1;
+}
+
+.page-narrow { max-width: 640px; }
+
+.site-footer {
+  background: var(--mg-papel);
+  border-top: 1px solid var(--mg-borde);
+  color: var(--mg-tinta-suave);
+  font-size: 0.875rem;
+}
+
+.site-footer .wrap { max-width: 960px; margin: 0 auto; padding: 1.25rem 1.5rem; }
+
+/* ---------- 5. Botones ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn--primary { background: var(--mg-verde); color: var(--mg-papel); }
+.btn--primary:hover { background: var(--mg-verde-oscuro); box-shadow: var(--shadow-card); }
+
+.btn--ghost { background: transparent; color: var(--mg-tinta); border-color: var(--mg-borde); }
+.btn--ghost:hover { background: var(--mg-gris-tinta); }
+
+.btn--danger { background: var(--mg-vino); color: var(--mg-papel); }
+.btn--danger:hover { background: var(--mg-vino-oscuro); box-shadow: var(--shadow-card); }
+
+.btn--sm { padding: 0.4rem 0.8rem; font-size: 0.82rem; }
+.btn--pill { border-radius: 999px; }
+
+/* ---------- 6. Tarjeta resumen ("total de gastos") ---------- */
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.page-header h1 { font-size: clamp(1.65rem, 1.35rem + 1.2vw, 2.35rem); }
+.page-header p { margin: 0.35rem 0 0; color: var(--mg-tinta-suave); max-width: 42ch; }
+
+.summary-card {
+  background: var(--mg-papel);
+  border: 1px solid var(--mg-borde);
+  border-left: 6px solid var(--mg-verde);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  animation: rise 0.4s ease both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.summary-card .label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mg-tinta-suave);
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.summary-card .amount {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+  font-weight: 600;
+  color: var(--mg-verde);
+  border-bottom: 3px double var(--mg-verde);
+  padding-bottom: 0.1em;
+  margin: 0;
+}
+
+.summary-card .count { margin: 0.5rem 0 0; color: var(--mg-tinta-suave); font-size: 0.9rem; }
+
+/* ---------- 7. Tabla de gastos ---------- */
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--mg-papel);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.ledger-table th, .ledger-table td { padding: 0.9rem 1.1rem; text-align: left; }
+
+.ledger-table thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mg-tinta-suave);
+  font-weight: 600;
+  border-bottom: 1px solid var(--mg-borde);
+}
+
+.ledger-table tbody tr { border-bottom: 1px solid var(--mg-borde); transition: background-color 0.15s ease; }
+.ledger-table tbody tr:last-child { border-bottom: none; }
+.ledger-table tbody tr:hover { background: var(--mg-verde-tinta); }
+
+.ledger-table td.desc { font-weight: 600; }
+.ledger-table td.date { color: var(--mg-tinta-suave); font-family: var(--font-mono); font-size: 0.9rem; }
+
+.ledger-table th.amount,
+.ledger-table td.amount {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ledger-table td.actions { text-align: right; white-space: nowrap; }
+.ledger-table td.actions a { margin-left: 0.35rem; }
+
+/* Versión apilada para pantallas angostas: la misma tabla se
+   convierte en tarjetas usando solo CSS (sin duplicar HTML). */
+@media (max-width: 720px) {
+  .ledger-table thead { display: none; }
+  .ledger-table, .ledger-table tbody, .ledger-table tr, .ledger-table td {
+    display: block;
+    width: 100%;
+  }
+  .ledger-table tr {
+    margin-bottom: 1rem;
+    border: 1px solid var(--mg-borde);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+  }
+  .ledger-table tbody tr:last-child { margin-bottom: 0; }
+  .ledger-table td {
+    border: none;
+    padding: 0.4rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+  .ledger-table td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    font-weight: 600;
+    color: var(--mg-tinta-suave);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  /* El valor real de la celda vive en su propio span: así puede encogerse
+     y partir palabras largas en vez de forzar overflow horizontal. */
+  .ledger-table td > .cell-value {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    text-align: right;
+  }
+  .ledger-table td.desc > .cell-value { text-align: right; }
+  .ledger-table td.actions {
+    justify-content: flex-start;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+  .ledger-table td.actions::before { content: "Acciones"; }
+  .ledger-table td.actions a { margin-left: 0; }
+}
+
+/* ---------- 8. Etiquetas de categoría ---------- */
+.tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.tag--alimentacion    { background: var(--mg-verde-tinta); color: var(--mg-verde-oscuro); }
+.tag--transporte      { background: var(--mg-gris-tinta); color: var(--mg-tinta-suave); }
+.tag--entretenimiento { background: var(--mg-bronce-tinta); color: #7a5b1e; }
+.tag--salud           { background: var(--mg-vino-tinta); color: var(--mg-vino-oscuro); }
+.tag--educacion       { background: var(--mg-verde-tinta); color: var(--mg-verde); border-color: var(--mg-verde); }
+.tag--compras         { background: var(--mg-bronce-tinta); color: var(--mg-bronce); border-color: var(--mg-bronce); }
+.tag--otros           { background: var(--mg-gris-tinta); color: var(--mg-tinta-suave); border-color: var(--mg-borde); }
+
+/* ---------- 9. Formularios y validación ---------- */
+.form-card {
+  background: var(--mg-papel);
+  border: 1px solid var(--mg-borde);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 2rem;
+}
+
+.field { margin-bottom: 1.25rem; }
+
+.field label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mg-tinta-suave);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.field input, .field select {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--mg-tinta);
+  background: #fff;
+  border: 1px solid var(--mg-borde);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.85rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--mg-verde);
+  box-shadow: 0 0 0 3px var(--mg-verde-tinta);
+}
+
+.field select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--mg-tinta-suave) 50%),
+    linear-gradient(135deg, var(--mg-tinta-suave) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 1.1em, calc(100% - 13px) 1.1em;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.5rem;
+}
+
+/* Los nombres de estas clases (field-validation-error, input-validation-error,
+   validation-summary-errors/valid) los agrega/quita jquery.validate.unobtrusive;
+   no son inventados, así que no deben renombrarse. */
+.field input.input-validation-error,
+.field select.input-validation-error {
+  border-color: var(--mg-vino);
+}
+
+.field-validation-error {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--mg-vino);
+}
+
+.field-validation-error:not(:empty)::before { content: "⚠ "; }
+
+.alert-error { display: none; }
+
+.alert-error.validation-summary-errors {
+  display: block;
+  background: var(--mg-vino-tinta);
+  border: 1px solid var(--mg-vino);
+  border-left: 4px solid var(--mg-vino);
+  color: var(--mg-vino-oscuro);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.alert-error.validation-summary-errors ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+
+.form-actions { display: flex; gap: 0.75rem; margin-top: 1.75rem; }
+
+/* ---------- 10. Tarjeta de detalle / confirmación de borrado ---------- */
+.detail-card {
+  background: var(--mg-papel);
+  border: 1px solid var(--mg-borde);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 2rem;
+  max-width: 560px;
+}
+
+.detail-card dl { margin: 0; }
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--mg-borde);
+}
+
+.detail-row:last-child { border-bottom: none; }
+
+.detail-row dt {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mg-tinta-suave);
+  font-weight: 600;
+  margin: 0;
+}
+
+.detail-row dd { margin: 0; font-weight: 600; text-align: right; }
+
+.detail-row dd.amount {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--mg-verde);
+  font-size: 1.15rem;
+}
+
+.detail-actions { display: flex; gap: 0.75rem; margin-top: 1.75rem; flex-wrap: wrap; }
+
+.confirm-card { border-top: 4px solid var(--mg-vino); }
+.confirm-card h1 { color: var(--mg-vino-oscuro); }
+.confirm-warning { color: var(--mg-tinta-suave); margin: -0.5rem 0 1.5rem; }
+
+/* ---------- 11. Estado vacío ---------- */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--mg-tinta-suave);
+  background: var(--mg-papel);
+  border: 1px dashed var(--mg-borde);
+  border-radius: var(--radius);
+}
+
+.empty-state p { margin: 0.5rem 0 1.25rem; }

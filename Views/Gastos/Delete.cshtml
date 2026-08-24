@@ -4,26 +4,37 @@
     ViewData["Title"] = "Eliminar gasto";
 }
 
-<h1>Eliminar gasto</h1>
+<div class="page-header">
+    <div>
+        <h1>¿Eliminar este gasto?</h1>
+    </div>
+</div>
 
-<p>¿Seguro que deseas eliminar este gasto?</p>
+<div class="detail-card confirm-card">
+    <p class="confirm-warning">Esta acción no se puede deshacer.</p>
 
-<dl class="row">
-    <dt class="col-sm-3">Descripción</dt>
-    <dd class="col-sm-9">@Model.Descripcion</dd>
+    <dl>
+        <div class="detail-row">
+            <dt>Descripción</dt>
+            <dd>@Model.Descripcion</dd>
+        </div>
+        <div class="detail-row">
+            <dt>Monto</dt>
+            <dd class="amount">S/ @Model.Monto.ToString("N2")</dd>
+        </div>
+        <div class="detail-row">
+            <dt>Categoría</dt>
+            <dd><span class="tag tag--@(Model.Categoria.ToString().ToLowerInvariant())">@Html.DisplayFor(m => m.Categoria)</span></dd>
+        </div>
+        <div class="detail-row">
+            <dt>Fecha</dt>
+            <dd>@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+        </div>
+    </dl>
 
-    <dt class="col-sm-3">Monto</dt>
-    <dd class="col-sm-9">S/ @Model.Monto.ToString("N2")</dd>
-
-    <dt class="col-sm-3">Categoría</dt>
-    <dd class="col-sm-9">@Html.DisplayFor(m => m.Categoria)</dd>
-
-    <dt class="col-sm-3">Fecha</dt>
-    <dd class="col-sm-9">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
-</dl>
-
-<form asp-action="Delete">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Sí, eliminar</button>
-    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
-</form>
+    <form asp-action="Delete" class="detail-actions">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn--danger">Sí, eliminar</button>
+        <a asp-action="Index" class="btn btn--ghost">Cancelar</a>
+    </form>
+</div>

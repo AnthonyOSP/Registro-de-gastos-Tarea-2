@@ -1,48 +1,63 @@
 @model IEnumerable<Gasto>
 
 @{
-    ViewData["Title"] = "Gastos";
+    ViewData["Title"] = "Mis gastos";
+    var gastos = Model.ToList();
 }
 
-<h1>Gastos</h1>
+<div class="page-header">
+    <div>
+        <h1>Mis gastos</h1>
+        <p>Aquí puedes administrar tus gastos personales: revisa, registra, edita o elimina cada movimiento.</p>
+    </div>
+    <a asp-action="Create" class="btn btn--primary">+ Nuevo gasto</a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Registrar gasto</a>
-</p>
+<div class="summary-card">
+    <div>
+        <p class="label">Total de gastos</p>
+        <p class="amount">S/ @ViewBag.Total.ToString("N2")</p>
+    </div>
+    <p class="count">@gastos.Count gasto@(gastos.Count == 1 ? "" : "s") registrado@(gastos.Count == 1 ? "" : "s")</p>
+</div>
 
-@if (!Model.Any())
+@if (!gastos.Any())
 {
-    <p>Aún no hay gastos registrados.</p>
+    <div class="empty-state">
+        <h2>Todavía no registraste ningún gasto</h2>
+        <p>Usa el botón "+ Nuevo gasto" para anotar el primero.</p>
+        <a asp-action="Create" class="btn btn--primary">+ Nuevo gasto</a>
+    </div>
 }
 else
 {
-    <table class="table table-striped">
+    <table class="ledger-table">
         <thead>
             <tr>
                 <th>Descripción</th>
-                <th>Monto</th>
                 <th>Categoría</th>
                 <th>Fecha</th>
-                <th>Acciones</th>
+                <th class="amount">Monto</th>
+                <th class="actions">Acciones</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in gastos)
             {
                 <tr>
-                    <td>@item.Descripcion</td>
-                    <td>S/ @item.Monto.ToString("N2")</td>
-                    <td>@Html.DisplayFor(modelItem => item.Categoria)</td>
-                    <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Ver</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    <td class="desc" data-label="Descripción"><span class="cell-value">@item.Descripcion</span></td>
+                    <td data-label="Categoría">
+                        <span class="cell-value"><span class="tag tag--@(item.Categoria.ToString().ToLowerInvariant())">@Html.DisplayFor(modelItem => item.Categoria)</span></span>
+                    </td>
+                    <td class="date" data-label="Fecha"><span class="cell-value">@item.Fecha.ToString("dd/MM/yyyy")</span></td>
+                    <td class="amount" data-label="Monto"><span class="cell-value">S/ @item.Monto.ToString("N2")</span></td>
+                    <td class="actions">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn--ghost btn--sm">Ver</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn--ghost btn--sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn--ghost btn--sm">Eliminar</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
-    <p><strong>Total de gastos: S/ @ViewBag.Total.ToString("N2")</strong></p>
 }

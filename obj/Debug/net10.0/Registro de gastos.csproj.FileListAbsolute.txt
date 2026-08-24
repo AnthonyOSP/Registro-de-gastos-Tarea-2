@@ -18,10 +18,7 @@
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/rjimswa.dswa.cache.json
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/rjsmrazor.dswa.cache.json
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/rjsmcshtml.dswa.cache.json
-/Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/scopedcss/Views/Shared/_Layout.cshtml.rz.scp.css
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/scopedcss/bundle/Registro de gastos.styles.css
-/Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/scopedcss/projectbundle/Registro de gastos.bundle.scp.css
-/Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/uh07d8q3en-{0}-b9sayid5wm-b9sayid5wm.gz
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/kkd8osn8zu-{0}-61n19gt1b8-61n19gt1b8.gz
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/3m96oj1q6e-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/wnnhuijsgw-{0}-bqjiyaj88i-bqjiyaj88i.gz
@@ -83,8 +80,6 @@
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/hj664p4rul-{0}-muycvpuwrr-muycvpuwrr.gz
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/yzj39gr9ea-{0}-87fc7y1x7t-87fc7y1x7t.gz
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/s84cjrd06y-{0}-mlv21k5csn-mlv21k5csn.gz
-/Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/zhsk1wzj86-{0}-bxenklj443-bxenklj443.gz
-/Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/p45y10twk6-{0}-bxenklj443-bxenklj443.gz
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/staticwebassets.build.json
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/staticwebassets.build.json.cache
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/staticwebassets.development.json
@@ -95,3 +90,5 @@
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/Registro de gastos.pdb
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/Registro de gastos.genruntimeconfig.cache
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/ref/Registro de gastos.dll
+/Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/Registro de gastos.sourcelink.json
+/Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/uh07d8q3en-{0}-wlk6xgbnl2-wlk6xgbnl2.gz
