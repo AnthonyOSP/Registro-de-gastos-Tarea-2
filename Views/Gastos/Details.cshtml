@@ -1,0 +1,24 @@
+@model Gasto
+
+@{
+    ViewData["Title"] = "Detalle del gasto";
+}
+
+<h1>Detalle del gasto</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Descripción</dt>
+    <dd class="col-sm-9">@Model.Descripcion</dd>
+
+    <dt class="col-sm-3">Monto</dt>
+    <dd class="col-sm-9">S/ @Model.Monto.ToString("N2")</dd>
+
+    <dt class="col-sm-3">Categoría</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(m => m.Categoria)</dd>
+
+    <dt class="col-sm-3">Fecha</dt>
+    <dd class="col-sm-9">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Editar</a>
+<a asp-action="Index" class="btn btn-outline-secondary">Volver a la lista</a>

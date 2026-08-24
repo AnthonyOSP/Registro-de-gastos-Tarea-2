@@ -1,0 +1,48 @@
+@model IEnumerable<Gasto>
+
+@{
+    ViewData["Title"] = "Gastos";
+}
+
+<h1>Gastos</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Registrar gasto</a>
+</p>
+
+@if (!Model.Any())
+{
+    <p>Aún no hay gastos registrados.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Categoría</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Descripcion</td>
+                    <td>S/ @item.Monto.ToString("N2")</td>
+                    <td>@Html.DisplayFor(modelItem => item.Categoria)</td>
+                    <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Ver</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p><strong>Total de gastos: S/ @ViewBag.Total.ToString("N2")</strong></p>
+}
