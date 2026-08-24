@@ -13,15 +13,39 @@
         <h1>Mis gastos</h1>
         <p>Aquí puedes administrar tus gastos personales: revisa, registra, edita o elimina cada movimiento.</p>
     </div>
-    <a asp-action="Create" class="btn btn--primary">+ Nuevo gasto</a>
+    <a asp-action="Create" class="btn btn--primary" data-modal-target="modal-nuevo-gasto">+ Nuevo gasto</a>
 </div>
+
+<!-- Modal de "nuevo gasto": se abre con JS (dialog.showModal()) en vez de
+     navegar a /Gastos/Create. Si JavaScript no está disponible, el enlace de
+     arriba igual funciona y navega normalmente a esa página (data-modal-target
+     no tiene efecto sin JS). El formulario se envía tal cual a GastosController
+     igual que si estuviera en su propia página: si hay errores de validación,
+     el navegador termina en la página completa de Crear (con el mismo
+     formulario) en vez de reabrir el modal — evita tener que reimplementar la
+     validación por AJAX. -->
+<dialog id="modal-nuevo-gasto" class="app-modal">
+    <div class="modal-box form-card">
+        <div class="modal-head">
+            <h2>Registrar gasto</h2>
+            <button type="button" class="modal-close" data-modal-close aria-label="Cerrar">&times;</button>
+        </div>
+        <form asp-controller="Gastos" asp-action="Create">
+            <partial name="_CrearGastoForm" model="null" />
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary">Guardar</button>
+                <button type="button" class="btn btn--ghost" data-modal-close>Cancelar</button>
+            </div>
+        </form>
+    </div>
+</dialog>
 
 @if (!Model.HayGastosRegistrados)
 {
     <div class="empty-state">
         <h2>No tienes gastos registrados todavía.</h2>
         <p>Empieza a llevar el control de tus gastos personales.</p>
-        <a asp-action="Create" class="btn btn--primary">Registrar mi primer gasto</a>
+        <a asp-action="Create" class="btn btn--primary" data-modal-target="modal-nuevo-gasto">Registrar mi primer gasto</a>
     </div>
     return;
 }
@@ -146,3 +170,7 @@
         }
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

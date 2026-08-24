@@ -23,6 +23,7 @@
    11. Estado vacío
    12. Dashboard (tarjetas secundarias, resumen por categoría, filtros)
    13. Dashboard a pantalla completa (sin scroll de página)
+   14. Modal ("nuevo gasto")
    ============================================================ */
 
 /* ---------- 1. Tokens ---------- */
@@ -716,4 +717,66 @@ img { max-width: 100%; }
     min-height: 0;
     overflow-y: auto;
   }
+}
+
+/* ---------- 14. Modal ("nuevo gasto") ---------- */
+/* <dialog> nativo: el navegador ya resuelve mostrar/ocultar según el atributo
+   "open", el centrado, el cierre con Escape y el foco atrapado dentro del
+   modal — no hace falta reimplementar nada de eso a mano (¡y no hay que
+   forzar "display", o quedaría visible todo el tiempo, esté abierto o no!).
+   Se llama ".app-modal" y no ".modal" a propósito: Bootstrap (todavía
+   cargado para Home/Privacy/Error) ya tiene su propia clase ".modal" con
+   "display: none" fijo — usar el mismo nombre lo dejaba siempre invisible. */
+.app-modal {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: min(90vw, 480px);
+  width: 100%;
+  margin: auto;
+  border-radius: var(--radius);
+}
+
+.app-modal[open] {
+  animation: modal-in 0.15s ease both;
+}
+
+.app-modal::backdrop {
+  background: rgba(43, 38, 32, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-box { padding: 1.75rem; }
+
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.modal-head h2 { margin: 0; font-size: 1.35rem; }
+
+.modal-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--mg-tinta-suave);
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+}
+
+.modal-close:hover { background: var(--mg-gris-tinta); color: var(--mg-tinta); }
+
+@media (prefers-reduced-motion: reduce) {
+  .app-modal[open] { animation: none; }
 }
