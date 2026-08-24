@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Registro_de_gastos.Models;
 using Registro_de_gastos.Services;
+using Registro_de_gastos.ViewModels;
 
 namespace Registro_de_gastos.Controllers;
 
@@ -18,11 +19,25 @@ public class GastosController : Controller
     }
 
     // GET: Gastos
-    public IActionResult Index()
+    // El dashboard (Total, Cantidad, MayorGasto, Promedio, ResumenPorCategoria) se
+    // calcula siempre sobre TODOS los gastos; solo la lista de abajo (Gastos) se
+    // filtra según lo que el usuario haya escrito en la barra de filtros.
+    public IActionResult Index(string? busqueda, CategoriaGasto? categoria, DateTime? fecha)
     {
-        var gastos = _gastoService.ObtenerTodos();
-        ViewBag.Total = _gastoService.ObtenerTotal();
-        return View(gastos);
+        var viewModel = new GastosIndexViewModel
+        {
+            Gastos = _gastoService.FiltrarGastos(busqueda, categoria, fecha),
+            Total = _gastoService.ObtenerTotal(),
+            Cantidad = _gastoService.ObtenerCantidad(),
+            MayorGasto = _gastoService.ObtenerMayorGasto(),
+            Promedio = _gastoService.ObtenerPromedio(),
+            ResumenPorCategoria = _gastoService.ObtenerTotalesPorCategoria(),
+            Busqueda = busqueda,
+            Categoria = categoria,
+            Fecha = fecha
+        };
+
+        return View(viewModel);
     }
 
     // GET: Gastos/Details/5

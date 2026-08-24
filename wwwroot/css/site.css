@@ -21,6 +21,7 @@
    9. Formularios y validación
    10. Tarjeta de detalle / confirmación de borrado
    11. Estado vacío
+   12. Dashboard (tarjetas secundarias, resumen por categoría, filtros)
    ============================================================ */
 
 /* ---------- 1. Tokens ---------- */
@@ -243,7 +244,9 @@ img { max-width: 100%; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.summary-card .label {
+/* Utilidad de etiqueta pequeña, reutilizada por la tarjeta resumen, las
+   tarjetas secundarias del dashboard y las filas de "gastos por categoría". */
+.label {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -519,3 +522,103 @@ img { max-width: 100%; }
 }
 
 .empty-state p { margin: 0.5rem 0 1.25rem; }
+
+/* ---------- 12. Dashboard (tarjetas secundarias, categorías, filtros) ---------- */
+
+/* Tarjetas secundarias del dashboard (Cantidad, Mayor gasto, Promedio): mismo
+   lenguaje visual que .summary-card pero más discretas — la tarjeta de Total
+   sigue siendo la única con la pestaña verde y el doble subrayado. */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--mg-papel);
+  border: 1px solid var(--mg-borde);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 1.25rem 1.5rem;
+}
+
+.stat-amount {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--mg-verde);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}
+
+/* Resumen por categoría: filas simples con una barra proporcional al total. */
+.category-summary { margin-bottom: 2rem; }
+.category-summary h2 { font-size: 1.15rem; margin-bottom: 1rem; }
+
+.category-list {
+  background: var(--mg-papel);
+  border: 1px solid var(--mg-borde);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 1.25rem 1.5rem;
+}
+
+.category-row + .category-row { margin-top: 1rem; }
+
+.category-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.category-amount {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.bar-track {
+  height: 0.5rem;
+  background: var(--mg-gris-tinta);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: var(--mg-verde);
+  border-radius: 999px;
+}
+
+/* Barra de filtros: reutiliza .field (mismos inputs/labels que los formularios). */
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--mg-papel);
+  border: 1px solid var(--mg-borde);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-bar .field {
+  flex: 1 1 160px;
+  min-width: 140px;
+  margin-bottom: 0;
+}
+
+.filter-bar .filter-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}

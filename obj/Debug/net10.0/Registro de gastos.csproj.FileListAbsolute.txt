@@ -91,4 +91,4 @@
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/Registro de gastos.genruntimeconfig.cache
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/ref/Registro de gastos.dll
 /Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/Registro de gastos.sourcelink.json
-/Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/uh07d8q3en-{0}-wlk6xgbnl2-wlk6xgbnl2.gz
+/Users/tony/Documents/USMP/2026-2/Programación 1/Registro de gastos/obj/Debug/net10.0/compressed/uh07d8q3en-{0}-uh837ebh5h-uh837ebh5h.gz
