@@ -4,37 +4,39 @@
     ViewData["Title"] = "Eliminar gasto";
 }
 
-<div class="page-header">
-    <div>
-        <h1>¿Eliminar este gasto?</h1>
+<div class="page-narrow">
+    <div class="page-header">
+        <div>
+            <h1>¿Eliminar este gasto?</h1>
+        </div>
     </div>
-</div>
 
-<div class="detail-card confirm-card">
-    <p class="confirm-warning">Esta acción no se puede deshacer.</p>
+    <div class="detail-card confirm-card">
+        <p class="confirm-warning">Esta acción no se puede deshacer.</p>
 
-    <dl>
-        <div class="detail-row">
-            <dt>Descripción</dt>
-            <dd>@Model.Descripcion</dd>
-        </div>
-        <div class="detail-row">
-            <dt>Monto</dt>
-            <dd class="amount">S/ @Model.Monto.ToString("N2")</dd>
-        </div>
-        <div class="detail-row">
-            <dt>Categoría</dt>
-            <dd><span class="tag tag--@(Model.Categoria.ToString().ToLowerInvariant())">@Html.DisplayFor(m => m.Categoria)</span></dd>
-        </div>
-        <div class="detail-row">
-            <dt>Fecha</dt>
-            <dd>@Model.Fecha.ToString("dd/MM/yyyy")</dd>
-        </div>
-    </dl>
+        <dl>
+            <div class="detail-row">
+                <dt>Descripción</dt>
+                <dd>@Model.Descripcion</dd>
+            </div>
+            <div class="detail-row">
+                <dt>Monto</dt>
+                <dd class="amount">S/ @Model.Monto.ToString("N2")</dd>
+            </div>
+            <div class="detail-row">
+                <dt>Categoría</dt>
+                <dd><span class="tag tag--@(Model.Categoria.ToString().ToLowerInvariant())">@Html.DisplayFor(m => m.Categoria)</span></dd>
+            </div>
+            <div class="detail-row">
+                <dt>Fecha</dt>
+                <dd>@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+            </div>
+        </dl>
 
-    <form asp-action="Delete" class="detail-actions">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn--danger">Sí, eliminar</button>
-        <a asp-action="Index" class="btn btn--ghost">Cancelar</a>
-    </form>
+        <form asp-action="Delete" class="detail-actions">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn--danger">Sí, eliminar</button>
+            <a asp-action="Index" class="btn btn--ghost">Cancelar</a>
+        </form>
+    </div>
 </div>
