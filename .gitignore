@@ -1,0 +1,11 @@
+# Compilados de .NET (se regeneran con "dotnet build" / "dotnet publish")
+bin/
+obj/
+
+# Visual Studio / Rider
+.vs/
+*.user
+*.suo
+
+# macOS
+.DS_Store
