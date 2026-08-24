@@ -22,6 +22,7 @@
    10. Tarjeta de detalle / confirmación de borrado
    11. Estado vacío
    12. Dashboard (tarjetas secundarias, resumen por categoría, filtros)
+   13. Dashboard a pantalla completa (sin scroll de página)
    ============================================================ */
 
 /* ---------- 1. Tokens ---------- */
@@ -123,15 +124,6 @@ img { max-width: 100%; }
   text-decoration: none;
 }
 
-.brand::before {
-  content: "";
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background: var(--mg-verde);
-  display: inline-block;
-}
-
 .nav-links {
   list-style: none;
   display: flex;
@@ -223,7 +215,35 @@ img { max-width: 100%; }
 }
 
 .page-header h1 { font-size: clamp(1.65rem, 1.35rem + 1.2vw, 2.35rem); }
-.page-header p { margin: 0.35rem 0 0; color: var(--mg-tinta-suave); max-width: 42ch; }
+
+/* Título y subtítulo van uno al lado del otro, separados por una línea
+   vertical. Si no entran en una sola línea, se apilan sin la línea. */
+.page-header-text {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.page-header-text p {
+  margin: 0;
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--mg-borde);
+  color: var(--mg-tinta-suave);
+  max-width: 42ch;
+}
+
+@media (max-width: 640px) {
+  .page-header-text {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+  .page-header-text p {
+    padding-left: 0;
+    border-left: none;
+  }
+}
 
 .summary-card {
   background: var(--mg-papel);
@@ -624,4 +644,76 @@ img { max-width: 100%; }
   display: flex;
   gap: 0.5rem;
   flex: 0 0 auto;
+}
+
+/* Layout de dos columnas de "Mis gastos": a la izquierda el resumen (total,
+   estadísticas, categorías), a la derecha los filtros y la lista — mejor
+   aprovechamiento del ancho en pantallas grandes. Por debajo de 860px se
+   apila en una sola columna, en el mismo orden. */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Dentro de la columna, las 3 tarjetas de estadísticas van en una sola fila
+   (más angostas que las de la página completa) y el monto principal de
+   "Total gastado" se achica, porque su tamaño normal está pensado para el
+   ancho completo de la página. */
+.dashboard-side .stats-grid {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+.dashboard-side .stat-card { padding: 0.85rem 0.75rem; }
+.dashboard-side .stat-amount { font-size: 1.05rem; }
+.dashboard-side .summary-card { margin-bottom: 1.5rem; }
+.dashboard-side .summary-card .amount { font-size: 1.85rem; }
+.dashboard-side .category-summary { margin-bottom: 0; }
+
+@media (max-width: 860px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- 13. Dashboard a pantalla completa (sin scroll de página) ---------- */
+/* Solo se activa en Gastos/Index (el layout le agrega la clase "dashboard-page"
+   al <body>) y solo en pantallas anchas, que es cuando el layout de dos
+   columnas está activo. Ahí la página ocupa exactamente el alto de la ventana;
+   si la lista de gastos no entra completa, solo esa columna hace scroll —
+   el encabezado, el resumen y los filtros siempre quedan a la vista. */
+@media (min-width: 861px) {
+  body.dashboard-page {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  body.dashboard-page .site-header .wrap,
+  body.dashboard-page .site-footer .wrap,
+  body.dashboard-page .page {
+    max-width: none;
+  }
+
+  body.dashboard-page .page {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  body.dashboard-page .page-header {
+    flex: 0 0 auto;
+  }
+
+  body.dashboard-page .dashboard-grid {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+
+  body.dashboard-page .dashboard-side,
+  body.dashboard-page .dashboard-main {
+    min-height: 0;
+    overflow-y: auto;
+  }
 }

@@ -2,10 +2,14 @@
 
 @{
     ViewData["Title"] = "Mis gastos";
+    // Activa el layout de pantalla completa (ver site.css, sección 13): en
+    // pantallas anchas la página deja de crecer más allá de la ventana y solo
+    // la lista de gastos hace scroll interno si no entra completa.
+    ViewData["BodyClass"] = "dashboard-page";
 }
 
 <div class="page-header">
-    <div>
+    <div class="page-header-text">
         <h1>Mis gastos</h1>
         <p>Aquí puedes administrar tus gastos personales: revisa, registra, edita o elimina cada movimiento.</p>
     </div>
@@ -22,115 +26,123 @@
     return;
 }
 
-<!-- Dashboard: estas cifras se calculan sobre TODOS los gastos, no solo los filtrados. -->
-<div class="summary-card">
-    <div>
-        <p class="label">Total gastado</p>
-        <p class="amount">S/ @Model.Total.ToString("N2")</p>
-    </div>
-</div>
+<div class="dashboard-grid">
+    <!-- Columna izquierda: resumen. Estas cifras se calculan sobre TODOS los
+         gastos, no solo los filtrados. -->
+    <aside class="dashboard-side">
+        <div class="summary-card">
+            <div>
+                <p class="label">Total gastado</p>
+                <p class="amount">S/ @Model.Total.ToString("N2")</p>
+            </div>
+        </div>
 
-<div class="stats-grid">
-    <div class="stat-card">
-        <p class="label">Cantidad de gastos</p>
-        <p class="stat-amount">@Model.Cantidad</p>
-    </div>
-    <div class="stat-card">
-        <p class="label">Mayor gasto</p>
-        <p class="stat-amount">S/ @Model.MayorGasto.ToString("N2")</p>
-    </div>
-    <div class="stat-card">
-        <p class="label">Gasto promedio</p>
-        <p class="stat-amount">S/ @Model.Promedio.ToString("N2")</p>
-    </div>
-</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <p class="label">Cantidad de gastos</p>
+                <p class="stat-amount">@Model.Cantidad</p>
+            </div>
+            <div class="stat-card">
+                <p class="label">Mayor gasto</p>
+                <p class="stat-amount">S/ @Model.MayorGasto.ToString("N2")</p>
+            </div>
+            <div class="stat-card">
+                <p class="label">Gasto promedio</p>
+                <p class="stat-amount">S/ @Model.Promedio.ToString("N2")</p>
+            </div>
+        </div>
 
-<section class="category-summary">
-    <h2>Gastos por categoría</h2>
-    <div class="category-list">
-        @foreach (var item in Model.ResumenPorCategoria)
+        <section class="category-summary">
+            <h2>Gastos por categoría</h2>
+            <div class="category-list">
+                @foreach (var item in Model.ResumenPorCategoria)
+                {
+                    <div class="category-row">
+                        <div class="category-row-top">
+                            <span class="tag tag--@(item.Categoria.ToString().ToLowerInvariant())">@Html.DisplayFor(modelItem => item.Categoria)</span>
+                            <span class="category-amount">S/ @item.Total.ToString("N2")</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: @item.Porcentaje.ToString("0.#", CultureInfo.InvariantCulture)%"></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    </aside>
+
+    <!-- Columna derecha: filtros + la lista de gastos (esta sí filtrada). -->
+    <div class="dashboard-main">
+        <!-- Filtros: formulario GET sencillo, sin JavaScript. Los valores actuales
+             quedan en la URL (?busqueda=...&categoria=...&fecha=...), así que se
+             pueden compartir o recargar sin perderse. -->
+        <form asp-action="Index" method="get" class="filter-bar">
+            <div class="field">
+                <label asp-for="Busqueda">Buscar</label>
+                <input asp-for="Busqueda" placeholder="Ej. almuerzo" />
+            </div>
+            <div class="field">
+                <label for="Categoria">Categoría</label>
+                <select name="Categoria" id="Categoria">
+                    <option value="" selected="@(Model.Categoria.HasValue ? null : "selected")">Todas</option>
+                    @foreach (var opcion in Model.OpcionesCategoria)
+                    {
+                        <option value="@opcion.Value" selected="@(Model.Categoria?.ToString() == opcion.Value ? "selected" : null)">@opcion.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="Fecha">Fecha</label>
+                <input asp-for="Fecha" type="date" />
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn btn--primary btn--sm">Filtrar</button>
+                @if (Model.HayFiltrosActivos)
+                {
+                    <a asp-action="Index" class="btn btn--ghost btn--sm">Limpiar filtros</a>
+                }
+            </div>
+        </form>
+
+        @if (!Model.Gastos.Any())
         {
-            <div class="category-row">
-                <div class="category-row-top">
-                    <span class="tag tag--@(item.Categoria.ToString().ToLowerInvariant())">@Html.DisplayFor(modelItem => item.Categoria)</span>
-                    <span class="category-amount">S/ @item.Total.ToString("N2")</span>
-                </div>
-                <div class="bar-track">
-                    <div class="bar-fill" style="width: @item.Porcentaje.ToString("0.#", CultureInfo.InvariantCulture)%"></div>
-                </div>
+            <div class="empty-state">
+                <h2>No encontramos gastos con estos filtros.</h2>
+                <p>Prueba con otra descripción, categoría o fecha.</p>
+                <a asp-action="Index" class="btn btn--primary">Limpiar filtros</a>
             </div>
         }
-    </div>
-</section>
-
-<!-- Filtros: formulario GET sencillo, sin JavaScript. Los valores actuales quedan
-     en la URL (?busqueda=...&categoria=...&fecha=...), así que se pueden compartir
-     o recargar sin perderse. -->
-<form asp-action="Index" method="get" class="filter-bar">
-    <div class="field">
-        <label asp-for="Busqueda">Buscar</label>
-        <input asp-for="Busqueda" placeholder="Ej. almuerzo" />
-    </div>
-    <div class="field">
-        <label for="Categoria">Categoría</label>
-        <select name="Categoria" id="Categoria">
-            <option value="" selected="@(Model.Categoria.HasValue ? null : "selected")">Todas</option>
-            @foreach (var opcion in Model.OpcionesCategoria)
-            {
-                <option value="@opcion.Value" selected="@(Model.Categoria?.ToString() == opcion.Value ? "selected" : null)">@opcion.Text</option>
-            }
-        </select>
-    </div>
-    <div class="field">
-        <label asp-for="Fecha">Fecha</label>
-        <input asp-for="Fecha" type="date" />
-    </div>
-    <div class="filter-actions">
-        <button type="submit" class="btn btn--primary btn--sm">Filtrar</button>
-        @if (Model.HayFiltrosActivos)
+        else
         {
-            <a asp-action="Index" class="btn btn--ghost btn--sm">Limpiar filtros</a>
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Categoría</th>
+                        <th>Fecha</th>
+                        <th class="amount">Monto</th>
+                        <th class="actions">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Gastos)
+                    {
+                        <tr>
+                            <td class="desc" data-label="Descripción"><span class="cell-value">@item.Descripcion</span></td>
+                            <td data-label="Categoría">
+                                <span class="cell-value"><span class="tag tag--@(item.Categoria.ToString().ToLowerInvariant())">@Html.DisplayFor(modelItem => item.Categoria)</span></span>
+                            </td>
+                            <td class="date" data-label="Fecha"><span class="cell-value">@item.Fecha.ToString("dd/MM/yyyy")</span></td>
+                            <td class="amount" data-label="Monto"><span class="cell-value">S/ @item.Monto.ToString("N2")</span></td>
+                            <td class="actions">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn--ghost btn--sm">Ver</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn--ghost btn--sm">Editar</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn--ghost btn--sm">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         }
     </div>
-</form>
-
-@if (!Model.Gastos.Any())
-{
-    <div class="empty-state">
-        <h2>No encontramos gastos con estos filtros.</h2>
-        <p>Prueba con otra descripción, categoría o fecha.</p>
-        <a asp-action="Index" class="btn btn--primary">Limpiar filtros</a>
-    </div>
-}
-else
-{
-    <table class="ledger-table">
-        <thead>
-            <tr>
-                <th>Descripción</th>
-                <th>Categoría</th>
-                <th>Fecha</th>
-                <th class="amount">Monto</th>
-                <th class="actions">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Gastos)
-            {
-                <tr>
-                    <td class="desc" data-label="Descripción"><span class="cell-value">@item.Descripcion</span></td>
-                    <td data-label="Categoría">
-                        <span class="cell-value"><span class="tag tag--@(item.Categoria.ToString().ToLowerInvariant())">@Html.DisplayFor(modelItem => item.Categoria)</span></span>
-                    </td>
-                    <td class="date" data-label="Fecha"><span class="cell-value">@item.Fecha.ToString("dd/MM/yyyy")</span></td>
-                    <td class="amount" data-label="Monto"><span class="cell-value">S/ @item.Monto.ToString("N2")</span></td>
-                    <td class="actions">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn--ghost btn--sm">Ver</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn--ghost btn--sm">Editar</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn--ghost btn--sm">Eliminar</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+</div>

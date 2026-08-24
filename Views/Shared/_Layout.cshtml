@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body>
+<body class="@ViewData["BodyClass"]">
     <header class="site-header">
         <div class="wrap">
             <a class="brand" asp-area="" asp-controller="Home" asp-action="Index">Mis Gastos</a>
@@ -45,7 +45,7 @@
 
     <footer class="site-footer">
         <div class="wrap">
-            &copy; 2026 Mis Gastos — proyecto de Programación 1, USMP
+            &copy; 2026 Mis Gastos — Tarea 2, USMP
         </div>
     </footer>
 
