@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Registro de gastos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7ceb5ae07e235ce6d1c6172d8fd526f600cb517a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ebdc81ba914365af4081ba1612d5f2942f8b716e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Registro de gastos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Registro de gastos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
